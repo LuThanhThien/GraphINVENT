@@ -41,6 +41,7 @@ else:
     CPUS_PER_TASK = 4
 
 # set paths here
+WORKSPACE        = str(Path.cwd())  
 HOME             = str(Path.home())
 PYTHON_PATH      = f"/home/thienlu/miniconda3/envs/graphinvent/bin/python"
 GRAPHINVENT_PATH = "./graphinvent/"
@@ -95,7 +96,7 @@ def submit() -> None:
 
     # create an output directory
     # dataset_output_path = f"{HOME}/GraphINVENT/output_{DATASET}"
-    dataset_output_path = f"/mnt/c/Users/admin/code/play/GraphINVENT/output_{DATASET}"
+    dataset_output_path = f"{WORKSPACE}/output/output_{DATASET}"
     tensorboard_path    = os.path.join(dataset_output_path, "tensorboard")
     if JOBNAME != "":
         dataset_output_path = os.path.join(dataset_output_path, JOBNAME)
