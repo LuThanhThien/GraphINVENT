@@ -17,13 +17,13 @@ import torch
 
 
 # define what you want to do for the specified job(s)
-DATASET          = "gdb13_1K-debug"    # dataset name in "./data/pre-training/"
+DATASET          = "DRD2_actives"      # dataset name in "./data/pre-training/"
 JOB_TYPE         = "train"             # "preprocess", "train", "generate", or "test"
 JOBDIR_START_IDX = 0                   # where to start indexing job dirs
 N_JOBS           = 1                   # number of jobs to run per model
 RESTART          = False               # whether or not this is a restart job
 FORCE_OVERWRITE  = True                # overwrite job directories which already exist
-JOBNAME          = "example-job-name"  # used to create a sub directory
+JOBNAME          = "drd2"  # used to create a sub directory
 
 # if running using SLURM sbatch, specify params below
 USE_SLURM = False                        # use SLURM or not
@@ -42,7 +42,7 @@ else:
 
 # set paths here
 HOME             = str(Path.home())
-PYTHON_PATH      = f"{HOME}/miniconda3/envs/graphinvent/bin/python"
+PYTHON_PATH      = f"/home/thienlu/miniconda3/envs/graphinvent/bin/python"
 GRAPHINVENT_PATH = "./graphinvent/"
 DATA_PATH        = "./data/pre-training/"
 
@@ -53,17 +53,21 @@ else:
 
 # define dataset-specific parameters
 params = {
-    "atom_types"   : ["C", "N", "O", "S", "Cl"],
+    # Use tools/ to extract those information
+    "atom_types"   : ['C', 'N', 'O', 'F', 'S', 'Cl', 'Br'],
+    "max_n_nodes"  : 72,
+    # "atom_types"   : ['C', 'N', 'O', 'S', 'Cl'],
+    # "max_n_nodes"  : 13,
     "formal_charge": [-1, 0, +1],
-    "max_n_nodes"  : 13,
+    # 
     "job_type"     : JOB_TYPE,
     "dataset_dir"  : f"{DATA_PATH}{DATASET}/",
     "restart"      : RESTART,
     "model"        : "GGNN",
-    "sample_every" : 2,
-    "init_lr"      : 1e-4,
-    "epochs"       : 100,
-    "batch_size"   : 50,
+    "sample_every" : 5,
+    "init_lr"      : 1e-4, # learning rate
+    "epochs"       : 100,  # số epoch để train
+    "batch_size"   : 20,   # số batch size, giảm số này nếu gặp vấn đề về RAM
     "block_size"   : 1000,
     "device"       : DEVICE,
     "n_samples"    : 100,
@@ -72,6 +76,15 @@ params = {
     # and "n_samples"
 }
 
+additional_params = {
+    # Additional configurations
+    "use_aromatic_bonds"    : True,
+    "use_chirality"         : True,
+    # For generation
+    "generation_epoch"      : 100,  # <-- which model to use (i.e. which epoch)
+    "n_samples"             : 30000,       # <-- how many structures to generate
+}
+params.update(additional_params)
 
 def submit() -> None:
     """
@@ -81,7 +94,8 @@ def submit() -> None:
     check_paths()
 
     # create an output directory
-    dataset_output_path = f"{HOME}/GraphINVENT/output_{DATASET}"
+    # dataset_output_path = f"{HOME}/GraphINVENT/output_{DATASET}"
+    dataset_output_path = f"/mnt/c/Users/admin/code/play/GraphINVENT/output_{DATASET}"
     tensorboard_path    = os.path.join(dataset_output_path, "tensorboard")
     if JOBNAME != "":
         dataset_output_path = os.path.join(dataset_output_path, JOBNAME)

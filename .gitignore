@@ -1,2 +1,5 @@
 data/fine-tuning/qsar_model.pickle
 .vscode/*
+
+*.h5
+output/*

@@ -116,6 +116,7 @@ class GraphGenerator:
         # action or an invalid action is sampled, until `self.batch_size` number
         # of graphs have been generated
         while n_generated_so_far < self.batch_size:
+            print(f"generation_round: {generation_round}, n_generated_so_far: {n_generated_so_far}")
 
             # predict the APDs for this batch of graphs
             apd = softmax(self.model(self.nodes, self.edges))
@@ -154,7 +155,8 @@ class GraphGenerator:
 
             # update variables for tracking the progress
             t_bar.update(len(termination_idc))
-            generation_round += 1
+            if n_generated_so_far > 0:            
+                generation_round += 1
 
         t_bar.close()  # done sampling
 
@@ -338,7 +340,8 @@ class GraphGenerator:
         _conn_nodes(conn, generation_round, likelihoods_sampled)
 
     def copy_terminated_graphs(self, terminate_idc : torch.Tensor,
-                               n_graphs_generated : int, generation_round : int,
+                               n_graphs_generated : int, 
+                               generation_round : int,
                                likelihoods_sampled : torch.Tensor) -> int:
         """
         Copies terminated graphs (either because "terminate" action sampled, or
