@@ -238,7 +238,7 @@ class Workflow:
         else:
             self.restart_epoch = 0
 
-            print("* Defining model.", flush=True)
+            print(f"* Defining model: {self.constants.model}", flush=True)
             self.model = self.create_model()
             
             print("-- Defining optimizer.", flush=True)
@@ -286,9 +286,11 @@ class Workflow:
         else:
             raise ValueError("Invalid model entered.")
 
+        print("-- Model initialized.", flush=True)
         if self.constants.device == "cuda":
             net = net.to("cuda", non_blocking=True)
 
+        print("-- Model:", self.constants.model, flush=True)
         return net
 
     def preprocess_phase(self) -> None:

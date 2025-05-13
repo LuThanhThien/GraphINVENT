@@ -63,8 +63,8 @@ def get_last_epoch() -> str:
         try:
             # epoch_key, lr, avg_loss
             epoch_key, _, _ = read_row(path=convergence_path,
-                                       row=-1,
-                                       col=(0, 1, 2))
+                                      row=-1,
+                                      col=(0, 1, 2))
         except ValueError:
             epoch_key = "Epoch 1"
 

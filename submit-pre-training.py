@@ -17,13 +17,13 @@ import torch
 
 
 # define what you want to do for the specified job(s)
-DATASET          = "DRD2_actives"      # dataset name in "./data/pre-training/"
+DATASET          = "Papyrus"      # dataset name in "./data/pre-training/"
 JOB_TYPE         = "train"             # "preprocess", "train", "generate", or "test"
-JOBDIR_START_IDX = 0                   # where to start indexing job dirs
+JOBDIR_START_IDX = 2                   # where to start indexing job dirs
 N_JOBS           = 1                   # number of jobs to run per model
-RESTART          = False               # whether or not this is a restart job
+RESTART          = True                # whether or not this is a restart job
 FORCE_OVERWRITE  = True                # overwrite job directories which already exist
-JOBNAME          = "drd2"  # used to create a sub directory
+JOBNAME          = F"Papyrus-flavonoid"  # used to create a sub directory
 
 # if running using SLURM sbatch, specify params below
 USE_SLURM = False                        # use SLURM or not
@@ -45,21 +45,24 @@ WORKSPACE        = str(Path.cwd())
 HOME             = str(Path.home())
 PYTHON_PATH      = f"/home/thienlu/miniconda3/envs/graphinvent/bin/python"
 GRAPHINVENT_PATH = "./graphinvent/"
-DATA_PATH        = "./data/pre-training/"
+DATA_PATH        = "./data/"
 
 if torch.cuda.is_available():
     DEVICE = "cuda"
 else:
     DEVICE = "cpu"
 
+# DEVICE = "cpu"
+print(f"Using device: {DEVICE}")
+
 # define dataset-specific parameters
 params = {
     # Use tools/ to extract those information
-    "atom_types"   : ['C', 'N', 'O', 'F', 'S', 'Cl', 'Br'],
-    "max_n_nodes"  : 72,
+    "atom_types"   : ['C', 'N', 'O', 'F', 'P', 'S', 'Cl', 'Br', 'I'], #todo: automate
+    "max_n_nodes"  : 49,            #todo: automate
     # "atom_types"   : ['C', 'N', 'O', 'S', 'Cl'],
     # "max_n_nodes"  : 13,
-    "formal_charge": [-1, 0, +1],
+    "formal_charge": [-1, 0, +1],   #todo: automate
     # 
     "job_type"     : JOB_TYPE,
     "dataset_dir"  : f"{DATA_PATH}{DATASET}/",
@@ -82,7 +85,7 @@ additional_params = {
     "use_aromatic_bonds"    : True,
     "use_chirality"         : True,
     # For generation
-    "generation_epoch"      : 100,  # <-- which model to use (i.e. which epoch)
+    "generation_epoch"      : 10,  # <-- which model to use (i.e. which epoch)
     "n_samples"             : 30000,       # <-- how many structures to generate
 }
 params.update(additional_params)

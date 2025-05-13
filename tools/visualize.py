@@ -36,7 +36,9 @@ if __name__ == "__main__":
 
     mols_per_row = int(math.sqrt(n_samples))            # make a square grid
 
-    png_filename=smi_file[:-3] + "png"  # name of PNG file to create
+    smi_file_names = smi_file.split(".")[:-1]  # remove file extension
+    smi_file_name = ".".join(smi_file_names)  # name of file without extension
+    png_filename = smi_file_name + ".png"  # name of PNG file to create
     labels=list(range(n_samples))       # label structures with a number
 
     # draw the molecules (creates a PIL image)

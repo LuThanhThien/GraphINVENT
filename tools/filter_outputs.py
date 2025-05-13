@@ -80,7 +80,7 @@ def main():
     args = p.parse_args()
 
     # benzothiazole SMARTS (aromatic form):
-    motif = Chem.MolFromSmarts("c1ccc2ncsc2c1")
+    motif = Chem.MolFromSmiles("c1ccc2ncsc2c1")
     input_folder = Path(args.input)
     output_folder = input_folder.parent / "filtered"
     for smi_file in input_folder.glob("*.smi"):
