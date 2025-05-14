@@ -211,7 +211,10 @@ class Workflow:
             self.model = self.create_model()
 
             print("-- Loading model from previous saved state.", flush=True)
-            self.restart_epoch = util.get_restart_epoch()
+            path = None
+            while path is None or not os.path.exists(path):
+                self.restart_epoch = util.get_restart_epoch()
+                path = f"{job_dir}model_restart_{self.restart_epoch}.pth"
             self.model         = util.load_saved_model(
                 model=self.model,
                 path=f"{job_dir}model_restart_{self.restart_epoch}.pth"

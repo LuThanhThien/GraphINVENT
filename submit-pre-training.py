@@ -52,7 +52,7 @@ if torch.cuda.is_available():
 else:
     DEVICE = "cpu"
 
-# DEVICE = "cpu"
+DEVICE = "cpu"
 print(f"Using device: {DEVICE}")
 
 # define dataset-specific parameters

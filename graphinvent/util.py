@@ -2,6 +2,7 @@
 Contains various miscellaneous useful functions.
 """
 # load general packages and functions
+import os
 import csv
 from collections import namedtuple
 from typing import Union, Tuple
@@ -177,16 +178,18 @@ def get_restart_epoch() -> Union[int, str]:
         generation_path = constants.job_dir + "generation.log"
         epoch           = "NA"
         row             = -1
-        while not isinstance(epoch, int):
+        restart_path    = constants.job_dir + f"model_restart_{epoch}.pth"
+        while not isinstance(epoch, int) or not os.path.exists(restart_path):
+            
             epoch_key = read_row(path=generation_path, row=row, col=0)
             try:
                 epoch = int(epoch_key[6:])
             except ValueError:
                 epoch = "NA"
             row      -= 1
+            restart_path    = constants.job_dir + f"model_restart_{epoch}.pth"
     elif constants.job_type == "fine-tune":
         epoch = constants.generation_epoch
-
     else:
         epoch = 0
 
@@ -581,7 +584,7 @@ def write_graphs_to_smi(smi_filename : str,
             smi_writer.close()
 
     fraction_valid = torch.sum(validity_tensor, dim=0) / len(validity_tensor)
-
+    print(f"Writing SMILES to {smi_filename}...", flush=True)
     return fraction_valid, validity_tensor, uniqueness_tensor
 
 def write_training_status(epoch : Union[int, None]=None,
@@ -680,6 +683,9 @@ def write_molecules(molecules : list,
     if constants.job_type == "fine-tune":
         step         = epoch.split(" ")[1]
         smi_filename = constants.job_dir + f"generation/step{step}_{label}.smi"
+    elif constants.job_type == "generate":
+        epoch_number = epoch.split(" ")[1]
+        smi_filename = constants.job_dir + f"generation/epoch_generate_{epoch_number}.smi"
     else:
         epoch_number = epoch.split(" ")[1]
         smi_filename = constants.job_dir + f"generation/epoch_{epoch_number}.smi"

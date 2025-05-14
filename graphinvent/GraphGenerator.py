@@ -116,7 +116,7 @@ class GraphGenerator:
         # action or an invalid action is sampled, until `self.batch_size` number
         # of graphs have been generated
         while n_generated_so_far < self.batch_size:
-            print(f"generation_round: {generation_round}, n_generated_so_far: {n_generated_so_far}")
+            # print(f"generation_round: {generation_round}, n_generated_so_far: {n_generated_so_far}")
 
             # predict the APDs for this batch of graphs
             apd = softmax(self.model(self.nodes, self.edges))
